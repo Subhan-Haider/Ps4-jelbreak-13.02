@@ -7,8 +7,8 @@
     A PlayStation Vue userland code execution exploit for Playstation 4.
 </p>
 <p align="center">
-  <img src="https://github.com/Vuemony/vue-after-free/actions/workflows/build.yml/badge.svg" alt="Build Status">
-  <img src="https://github.com/Vuemony/vue-after-free/actions/workflows/ci.yml/badge.svg" alt="CI Status">
+  <img src="https://github.com/Subhan-Haider/Ps4-jelbreak-13.02/actions/workflows/build.yml/badge.svg" alt="Build Status">
+  <img src="https://github.com/Subhan-Haider/Ps4-jelbreak-13.02/actions/workflows/ci.yml/badge.svg" alt="CI Status">
 </p>
 
 
