@@ -14,7 +14,7 @@ xcopy /E /I /Y "src\download0\img\text" "dist\download0\img\text"
 xcopy /E /I /Y "src\download0\img\susec" "dist\download0\img\susec"
 xcopy /E /I /Y "src\download0\img\feil" "dist\download0\img\feil"
 
-:: Copy newly added midnight assets
 if exist "src\download0\img\midnight_bg.png" copy /Y "src\download0\img\midnight_bg.png" "dist\download0\img\midnight_bg.png"
+if exist "src\download0\payloads\goldhen.bin" copy /Y "src\download0\payloads\goldhen.bin" "dist\download0\payloads\goldhen.bin"
 
 echo Build completed!

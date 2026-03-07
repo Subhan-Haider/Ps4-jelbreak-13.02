@@ -87,15 +87,48 @@ import { BigInt, utils } from 'download0/types'
             include('main.js')
         }
         if (keyCode === 13) { // X / Select
-            log('Injecting GoldHEN payload...')
-            // In a real scenario, we would load the .bin into memory and execute
-            // For now, we simulate the success if jailbroken
-            if (is_jailbroken) {
-                log('GoldHEN 2.4 Loaded Successfully!')
-                utils.notify('GoldHEN 2.4 Loaded!')
-            } else {
-                log('Error: System not jailbroken. Run Jailbreak first!')
-                utils.notify('Jailbreak required!')
+            log('GoldHEN load requested.')
+
+            if (!is_jailbroken) {
+                log('Error: System not jailbroken.')
+                utils.notify('Jailbreak required first!')
+                return
+            }
+
+            try {
+                log('Initializing binloader...')
+                const bl = include('binloader.js') as any
+                if (bl && bl.binloader_init) {
+                    const loader = bl.binloader_init()
+
+                    // Search paths for GoldHEN
+                    const ghPaths = [
+                        '/download0/payloads/goldhen.bin',
+                        '/mnt/usb0/goldhen.bin',
+                        '/mnt/usb1/goldhen.bin',
+                        '/data/goldhen.bin'
+                    ]
+
+                    let success = false
+                    for (const path of ghPaths) {
+                        log('Checking ' + path + '...')
+                        if (loader.bl_load_from_file(path, false)) {
+                            log('GoldHEN payload sent to kernel!')
+                            utils.notify('GoldHEN Loaded Successfully!')
+                            success = true
+                            break
+                        }
+                    }
+
+                    if (!success) {
+                        log('GoldHEN.bin not found. Falling back to Network Loader.')
+                        utils.notify('GoldHEN.bin not found!\nStarting Network Loader...')
+                        loader.bl_network_loader()
+                    }
+                }
+            } catch (e) {
+                log('Critical Error: ' + (e as Error).message)
+                utils.notify('Load Failed: ' + (e as Error).message)
             }
         }
     }
