@@ -47,8 +47,13 @@ import { sysctlbyname } from 'download0/kernel'
     const fw = get_fwversion()
     const model = get_model()
 
-    utils.notify('Firmware: ' + fw + '\nModel: ' + model)
-    log('System Info: FW=' + fw + ', Model=' + model)
+    let jbStatus = '✅ Possible'
+    if (fw >= '13.02' || model.indexOf('PS5') >= 0) {
+        jbStatus = '⚠️ Userland Only'
+    }
+
+    utils.notify('Firmware: ' + fw + '\nModel: ' + model + '\nJB: ' + jbStatus)
+    log('System Info: FW=' + fw + ', Model=' + model + ', JB=' + jbStatus)
 
     jsmaf.setTimeout(function () {
         if (debugging) debugging.restart()
