@@ -91,7 +91,7 @@ import { BigInt, utils } from 'download0/types'
 
       if (!is_jailbroken) {
         log('Warning: System not jailbroken (13.02+ Research Mode).')
-        utils.notify('Run GoldHEN: You can click the button to try, but the system will block the "Homebrew Enabler" because it lacks permission to rewrite the console\'s core (the Kernel).')
+        utils.notify('Run GoldHEN: You can click the button to try, but the system will block the "Homebrew Enabler" because it lacks permission to rewrite the console\'s core (the Kernel). This is enabled so they can learn and do research.')
       }
 
       try {
