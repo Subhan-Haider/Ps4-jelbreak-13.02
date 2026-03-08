@@ -100,6 +100,7 @@ declare var kernel: any;
     { label: lang.ps5, script: 'ps5_ui.js', imgKey: 'ps5' },
     { label: 'Kern Research', script: 'payloads/research.js', imgKey: 'config' },
     { label: lang.payloadMenu, script: 'payload_host.js', imgKey: 'payloadMenu' },
+    { label: 'Credits', script: 'credits_ui.ts', imgKey: 'config' },
     { label: lang.config, script: 'config_ui.js', imgKey: 'config' }
   ]
 
@@ -210,11 +211,11 @@ declare var kernel: any;
   let pulseInterval: number | null = null
   let prevButton = -1
 
-  function easeInOut (t: number) {
+  function easeInOut(t: number) {
     return t < 0.5 ? 2 * t * t : -1 + (4 - 2 * t) * t
   }
 
-  function animateZoomIn (btn: Image, text: jsmaf.Text, btnOrigX: number, btnOrigY: number, textOrigX: number, textOrigY: number) {
+  function animateZoomIn(btn: Image, text: jsmaf.Text, btnOrigX: number, btnOrigY: number, textOrigX: number, textOrigY: number) {
     if (zoomInInterval) jsmaf.clearInterval(zoomInInterval)
     const btnW = buttonWidth
     const btnH = buttonHeight
@@ -247,7 +248,7 @@ declare var kernel: any;
     }, step)
   }
 
-  function animateZoomOut (btn: Image, text: jsmaf.Text, btnOrigX: number, btnOrigY: number, textOrigX: number, textOrigY: number) {
+  function animateZoomOut(btn: Image, text: jsmaf.Text, btnOrigX: number, btnOrigY: number, textOrigX: number, textOrigY: number) {
     if (zoomOutInterval) jsmaf.clearInterval(zoomOutInterval)
     if (pulseInterval) {
       jsmaf.clearInterval(pulseInterval)
@@ -283,7 +284,7 @@ declare var kernel: any;
     }, step)
   }
 
-  function startPulse (btn: Image, text: jsmaf.Text, btnOrigX: number, btnOrigY: number, textOrigX: number, textOrigY: number) {
+  function startPulse(btn: Image, text: jsmaf.Text, btnOrigX: number, btnOrigY: number, textOrigX: number, textOrigY: number) {
     if (pulseInterval) jsmaf.clearInterval(pulseInterval)
     const btnW = buttonWidth
     const btnH = buttonHeight
@@ -306,7 +307,7 @@ declare var kernel: any;
     }, step)
   }
 
-  function updateHighlight () {
+  function updateHighlight() {
     const prevButtonObj = buttons[prevButton]
     const buttonMarker = buttonMarkers[prevButton]
     if (prevButton >= 0 && prevButton !== currentButton && prevButtonObj && buttonMarker) {
@@ -349,7 +350,7 @@ declare var kernel: any;
     prevButton = currentButton
   }
 
-  function handleButtonPress () {
+  function handleButtonPress() {
     const fw = (typeof kernel !== 'undefined' && kernel.get_fwversion) ? kernel.get_fwversion() : ''
     const isUserlandOnly = fw && (fw.indexOf('PS5') >= 0 || fw >= '13.02')
 
