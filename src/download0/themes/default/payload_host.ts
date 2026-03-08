@@ -221,11 +221,11 @@ import { checkJailbroken } from 'download0/check-jailbroken'
   let zoomOutInterval: number | null = null
   let prevButton = -1
 
-  function easeInOut(t: number) {
+  function easeInOut (t: number) {
     return (1 - Math.cos(t * Math.PI)) / 2
   }
 
-  function animateZoomIn(btn: Image, text: jsmaf.Text, btnOrigX: number, btnOrigY: number, textOrigX: number, textOrigY: number) {
+  function animateZoomIn (btn: Image, text: jsmaf.Text, btnOrigX: number, btnOrigY: number, textOrigX: number, textOrigY: number) {
     if (zoomInInterval) jsmaf.clearInterval(zoomInInterval)
     const btnW = buttonWidth
     const btnH = buttonHeight
@@ -257,7 +257,7 @@ import { checkJailbroken } from 'download0/check-jailbroken'
     }, step)
   }
 
-  function animateZoomOut(btn: Image, text: jsmaf.Text, btnOrigX: number, btnOrigY: number, textOrigX: number, textOrigY: number) {
+  function animateZoomOut (btn: Image, text: jsmaf.Text, btnOrigX: number, btnOrigY: number, textOrigX: number, textOrigY: number) {
     if (zoomOutInterval) jsmaf.clearInterval(zoomOutInterval)
     const btnW = buttonWidth
     const btnH = buttonHeight
@@ -289,7 +289,7 @@ import { checkJailbroken } from 'download0/check-jailbroken'
     }, step)
   }
 
-  function updateHighlight() {
+  function updateHighlight () {
     const prevButtonObj = buttons[prevButton]
     const buttonMarker = buttonMarkers[prevButton]
     if (prevButton >= 0 && prevButton !== currentButton && prevButtonObj) {
@@ -367,7 +367,7 @@ import { checkJailbroken } from 'download0/check-jailbroken'
     }
   }
 
-  function handleButtonPress() {
+  function handleButtonPress () {
     if (currentButton < fileList.length) {
       const selectedEntry = fileList[currentButton]
       if (!selectedEntry) {

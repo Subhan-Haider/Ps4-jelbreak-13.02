@@ -190,9 +190,9 @@ import { checkJailbroken } from 'download0/check-jailbroken'
   let pulseInterval: number | null = null
   let prevButton = -1
 
-  function easeInOut(t: number) { return t < 0.5 ? 2 * t * t : -1 + (4 - 2 * t) * t }
+  function easeInOut (t: number) { return t < 0.5 ? 2 * t * t : -1 + (4 - 2 * t) * t }
 
-  function animateZoomIn(btn: Image, text: jsmaf.Text, btnOrigX: number, btnOrigY: number, textOrigX: number, textOrigY: number) {
+  function animateZoomIn (btn: Image, text: jsmaf.Text, btnOrigX: number, btnOrigY: number, textOrigX: number, textOrigY: number) {
     if (zoomInInterval) jsmaf.clearInterval(zoomInInterval)
     const btnW = buttonWidth; const btnH = buttonHeight
     const startScale = btn.scaleX || 1.0; const endScale = 1.08; const duration = 150
@@ -213,7 +213,7 @@ import { checkJailbroken } from 'download0/check-jailbroken'
     }, 16)
   }
 
-  function animateZoomOut(btn: Image, text: jsmaf.Text, btnOrigX: number, btnOrigY: number, textOrigX: number, textOrigY: number) {
+  function animateZoomOut (btn: Image, text: jsmaf.Text, btnOrigX: number, btnOrigY: number, textOrigX: number, textOrigY: number) {
     if (zoomOutInterval) jsmaf.clearInterval(zoomOutInterval)
     if (pulseInterval) { jsmaf.clearInterval(pulseInterval); pulseInterval = null }
     const btnW = buttonWidth; const btnH = buttonHeight
@@ -231,7 +231,7 @@ import { checkJailbroken } from 'download0/check-jailbroken'
     }, 16)
   }
 
-  function startPulse(btn: Image, text: jsmaf.Text, bX: number, bY: number, tX: number, tY: number) {
+  function startPulse (btn: Image, text: jsmaf.Text, bX: number, bY: number, tX: number, tY: number) {
     if (pulseInterval) jsmaf.clearInterval(pulseInterval)
     const btnW = buttonWidth; const btnH = buttonHeight
     let time = 0
@@ -245,7 +245,7 @@ import { checkJailbroken } from 'download0/check-jailbroken'
     }, 32)
   }
 
-  function updateHighlight() {
+  function updateHighlight () {
     const prevButtonObj = buttons[prevButton]
     const buttonMarker = buttonMarkers[prevButton]
     if (prevButton >= 0 && prevButton !== currentButton && prevButtonObj) {
@@ -297,7 +297,7 @@ import { checkJailbroken } from 'download0/check-jailbroken'
     }
   }
 
-  function handleButtonPress() {
+  function handleButtonPress () {
     if (currentButton < fileList.length) {
       const entry = fileList[currentButton]!
       if (entry.name.toLowerCase().endsWith('.js')) {
