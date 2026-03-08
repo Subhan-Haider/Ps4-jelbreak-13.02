@@ -60,6 +60,20 @@ If a kernel panic occurred you may need to press the power button on your consol
 **Q: How can I run a payload?**
 Closing and reopening Vue is required between running JS payloads, but .bin or .elf payloads can be run one after the other. Select the payload from the UI in the Payload Menu.
 
+# How to Jailbreak PS4 13.02 (Userland Only)
+
+> [!IMPORTANT]
+> Firmware **13.02** is currently **Userland Only**. You can run the exploit to gain code execution, but GoldHEN is not yet functional because the Kernel vulnerability was patched. Follow these steps for the "Educational Research" mode.
+
+1.  **Network Setup**: Connect your PS4 to the same network as your exploit host. Set Primary DNS to `127.0.0.2` (local only) or use a hosting provider.
+2.  **Launch Vue**: Open the **PlayStation Vue** app on your PS4. 
+3.  **Automatic Detection**: The host will automatically detect your firmware as 13.02. You will see a notification: `Firmware 13.02 is Userland Only`.
+4.  **Enter Midnight Menu**: After the exploit triggers, the **Midnight Theme** will load automatically.
+5.  **Run Tools**:
+    *   Select **System Info** to view console hardware details.
+    *   Select **Kern Research** (Educational) to see the progress on 13.02 kernel exploration.
+    *   Select **FTP Server** to browse the local PlayStation Vue sandbox files.
+
 **Q: Can I run the jailbreak offline?**
 No. PS Vue requires any form of network connection. Internet is not required, so you can use any network like home WiFi, a hotspot from your mobile phone, a network from a microcontroller like ESP32, or an Ethernet network from a repurposed PPPwn device.
 
