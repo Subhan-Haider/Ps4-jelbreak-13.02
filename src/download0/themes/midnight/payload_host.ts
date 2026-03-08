@@ -104,7 +104,6 @@ import { checkJailbroken } from 'download0/check-jailbroken'
 
     const fd = fn.open_sys(path_addr, new BigInt(0, 0), new BigInt(0, 0))
     if (!fd.eq(new BigInt(0xffffffff, 0xffffffff))) {
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       const count = (fn.getdents as any)(fd, buf, new BigInt(0, 4096))
       if (!count.eq(new BigInt(0xffffffff, 0xffffffff)) && count.lo > 0) {
         let offset = 0

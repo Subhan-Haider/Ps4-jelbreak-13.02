@@ -1,7 +1,6 @@
 import { fn, BigInt } from 'download0/types'
 
-export function checkJailbroken(): boolean {
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+export function checkJailbroken (): boolean {
   const fw = (globalThis as any).kernel ? (globalThis as any).kernel.get_fwversion() : 'Unknown'
 
   // Engineer Mode: Auto-bypass for 13.02+ research

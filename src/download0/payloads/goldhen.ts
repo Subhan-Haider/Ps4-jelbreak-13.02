@@ -102,7 +102,7 @@ import { BigInt, utils } from 'download0/types'
 
       try {
         log('Initializing binloader...')
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+
         const bl = include('binloader.js') as any
         if (bl && bl.binloader_init) {
           const loader = bl.binloader_init()

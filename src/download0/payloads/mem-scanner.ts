@@ -1,6 +1,5 @@
 import { fn, mem, BigInt, utils } from 'download0/types'
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
 declare var libc_addr: any;
 
 (function () {

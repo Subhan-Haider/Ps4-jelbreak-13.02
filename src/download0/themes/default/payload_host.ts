@@ -356,7 +356,6 @@ import { checkJailbroken } from 'download0/check-jailbroken'
     } else if (keyCode === backKey) {
       log('Going back to main menu...')
       try {
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         const theme = (typeof CONFIG !== 'undefined' && (CONFIG as any).theme) ? (CONFIG as any).theme : 'default'
         include('themes/' + theme + '/main.js')
       } catch (e) {

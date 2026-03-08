@@ -2,7 +2,6 @@ import { lang, useImageText, textImageBase } from 'download0/languages'
 import { libc_addr } from 'download0/userland'
 import { fn, BigInt, utils } from 'download0/types'
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
 declare var kernel: any;
 
 (function () {

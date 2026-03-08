@@ -20,7 +20,7 @@ import { fn, BigInt, utils } from 'download0/types'
     try {
       // 0 = RB_AUTOBOOT
       // Cast to any to avoid TS error if registration assertion didn't propagate well
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+
       (fn as any).reboot_sys(0)
     } catch (e) {
       log('Reboot failed: ' + (e as Error).message)
