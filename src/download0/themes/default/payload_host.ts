@@ -301,16 +301,16 @@ import { checkJailbroken } from 'download0/check-jailbroken'
     }
 
     for (let i = 0; i < buttons.length; i++) {
-      const button = buttons[i], buttonMarker = buttonMarkers[i], buttonText = buttonTexts[i]
+      const button = buttons[i]; const buttonMarker = buttonMarkers[i]; const buttonText = buttonTexts[i]
       if (!button || !buttonText) continue
       if (i === currentButton) {
-        button.alpha = 1.0, button.borderColor = 'rgb(100,200,255)', button.borderWidth = 3
+        button.alpha = 1.0; button.borderColor = 'rgb(100,200,255)'; button.borderWidth = 3
         if (buttonMarker) (buttonMarker as Image).visible = true
         animateZoomIn(button, buttonText, buttonOrigPos[i]!.x, buttonOrigPos[i]!.y, textOrigPos[i]!.x, textOrigPos[i]!.y)
       } else if (i !== prevButton) {
-        button.alpha = 0.5, button.borderColor = 'transparent', button.borderWidth = 0
-        button.scaleX = 1.0, button.scaleY = 1.0, button.x = buttonOrigPos[i]!.x, button.y = buttonOrigPos[i]!.y
-        buttonText.scaleX = 1.0, buttonText.scaleY = 1.0, buttonText.x = textOrigPos[i]!.x, buttonText.y = textOrigPos[i]!.y
+        button.alpha = 0.5; button.borderColor = 'transparent'; button.borderWidth = 0
+        button.scaleX = 1.0; button.scaleY = 1.0; button.x = buttonOrigPos[i]!.x; button.y = buttonOrigPos[i]!.y
+        buttonText.scaleX = 1.0; buttonText.scaleY = 1.0; buttonText.x = textOrigPos[i]!.x; buttonText.y = textOrigPos[i]!.y
         if (buttonMarker) (buttonMarker as Image).visible = false
       }
     }
@@ -356,6 +356,7 @@ import { checkJailbroken } from 'download0/check-jailbroken'
     } else if (keyCode === backKey) {
       log('Going back to main menu...')
       try {
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         const theme = (typeof CONFIG !== 'undefined' && (CONFIG as any).theme) ? (CONFIG as any).theme : 'default'
         include('themes/' + theme + '/main.js')
       } catch (e) {

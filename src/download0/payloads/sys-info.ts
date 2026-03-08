@@ -2,60 +2,60 @@ import { fn, mem, BigInt, utils } from 'download0/types'
 import { sysctlbyname } from 'download0/kernel'
 
 (function () {
-    log('System Info starting...')
+  log('System Info starting...')
 
-    function malloc(size: number) {
-        return mem.malloc(size)
+  function malloc (size: number) {
+    return mem.malloc(size)
+  }
+
+  function write64 (addr: BigInt, val: BigInt | number) {
+    mem.view(addr).setBigInt(0, new BigInt(val), true)
+  }
+
+  function read8 (addr: BigInt) {
+    return mem.view(addr).getUint8(0)
+  }
+
+  function get_fwversion () {
+    const buf = malloc(0x8)
+    const size = malloc(0x8)
+    write64(size, 0x8)
+    if (sysctlbyname('kern.sdk_version', buf, size, 0, 0)) {
+      const byte1 = Number(read8(buf.add(2)))
+      const byte2 = Number(read8(buf.add(3)))
+      return byte2.toString(16) + '.' + byte1.toString(16).padStart(2, '0')
     }
+    return 'Unknown'
+  }
 
-    function write64(addr: BigInt, val: BigInt | number) {
-        mem.view(addr).setBigInt(0, new BigInt(val), true)
+  function get_model () {
+    const buf = malloc(256)
+    const size = malloc(0x8)
+    write64(size, 256)
+    if (sysctlbyname('hw.model', buf, size, 0, 0)) {
+      let model = ''
+      for (let i = 0; i < 256; i++) {
+        const char = read8(buf.add(i))
+        if (char === 0) break
+        model += String.fromCharCode(char)
+      }
+      return model
     }
+    return 'Unknown'
+  }
 
-    function read8(addr: BigInt) {
-        return mem.view(addr).getUint8(0)
-    }
+  const fw = get_fwversion()
+  const model = get_model()
 
-    function get_fwversion() {
-        const buf = malloc(0x8)
-        const size = malloc(0x8)
-        write64(size, 0x8)
-        if (sysctlbyname('kern.sdk_version', buf, size, 0, 0)) {
-            const byte1 = Number(read8(buf.add(2)))
-            const byte2 = Number(read8(buf.add(3)))
-            return byte2.toString(16) + '.' + byte1.toString(16).padStart(2, '0')
-        }
-        return 'Unknown'
-    }
+  let jbStatus = '✅ Possible'
+  if (fw >= '13.02' || model.indexOf('PS5') >= 0) {
+    jbStatus = '⚠️ Userland Only'
+  }
 
-    function get_model() {
-        const buf = malloc(256)
-        const size = malloc(0x8)
-        write64(size, 256)
-        if (sysctlbyname('hw.model', buf, size, 0, 0)) {
-            let model = ''
-            for (let i = 0; i < 256; i++) {
-                const char = read8(buf.add(i))
-                if (char === 0) break
-                model += String.fromCharCode(char)
-            }
-            return model
-        }
-        return 'Unknown'
-    }
+  utils.notify('Firmware: ' + fw + '\nModel: ' + model + '\nJB: ' + jbStatus)
+  log('System Info: FW=' + fw + ', Model=' + model + ', JB=' + jbStatus)
 
-    const fw = get_fwversion()
-    const model = get_model()
-
-    let jbStatus = '✅ Possible'
-    if (fw >= '13.02' || model.indexOf('PS5') >= 0) {
-        jbStatus = '⚠️ Userland Only'
-    }
-
-    utils.notify('Firmware: ' + fw + '\nModel: ' + model + '\nJB: ' + jbStatus)
-    log('System Info: FW=' + fw + ', Model=' + model + ', JB=' + jbStatus)
-
-    jsmaf.setTimeout(function () {
-        if (debugging) debugging.restart()
-    }, 5000)
+  jsmaf.setTimeout(function () {
+    if (debugging) debugging.restart()
+  }, 5000)
 })()

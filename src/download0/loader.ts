@@ -21,7 +21,7 @@ include('kernel.js')
 include('check-jailbroken.js')
 log('All scripts loaded')
 
-export function show_success(immediate?: boolean) {
+export function show_success (immediate?: boolean) {
   if (immediate) {
     jsmaf.root.children.push(bg_success)
     log('Showing Success Image...')
@@ -41,7 +41,7 @@ const is_jailbroken = checkJailbroken()
 const themeFolder = (typeof CONFIG !== 'undefined' && typeof CONFIG.theme === 'string') ? CONFIG.theme : 'default'
 
 // Check if exploit has completed successfully
-function is_exploit_complete() {
+function is_exploit_complete () {
   // Check if we're actually jailbroken
   fn.register(24, 'getuid', [], 'bigint')
   fn.register(585, 'is_in_sandbox', [], 'bigint')
@@ -59,19 +59,19 @@ function is_exploit_complete() {
   return true
 }
 
-function write64(addr: BigInt, val: BigInt | number) {
+function write64 (addr: BigInt, val: BigInt | number) {
   mem.view(addr).setBigInt(0, new BigInt(val), true)
 }
 
-function read8(addr: BigInt) {
+function read8 (addr: BigInt) {
   return mem.view(addr).getUint8(0)
 }
 
-function malloc(size: number) {
+function malloc (size: number) {
   return mem.malloc(size)
 }
 
-function get_fwversion() {
+function get_fwversion () {
   const buf = malloc(0x8)
   const size = malloc(0x8)
   write64(size, 0x8)
@@ -174,7 +174,7 @@ if (!is_jailbroken) {
   try { include('themes/' + themeFolder + '/main.js') } catch (e) { /* escaped sandbox */ }
 }
 
-export function run_binloader() {
+export function run_binloader () {
   log('Initializing binloader...')
 
   try {

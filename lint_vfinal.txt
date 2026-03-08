@@ -1,0 +1,18 @@
+﻿
+> lint
+> eslint . --ext .ts,.js
+
+
+C:\Users\setup\Music\vue-after-free-main\src\download0\themes\default\payload_host.ts
+  307:27  error  Unexpected use of comma operator          no-sequences
+  311:27  error  Unexpected use of comma operator          no-sequences
+  312:28  error  Unexpected use of comma operator          no-sequences
+  313:32  error  Unexpected use of comma operator          no-sequences
+  359:68  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  359:93  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+
+C:\Users\setup\Music\vue-after-free-main\src\download0\themes\midnight\payload_host.ts
+  107:37  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+
+Γ£û 7 problems (7 errors, 0 warnings)
+

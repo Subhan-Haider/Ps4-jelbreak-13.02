@@ -1,0 +1,43 @@
+﻿
+> lint
+> eslint . --ext .ts,.js
+
+
+C:\Users\setup\Music\vue-after-free-main\src\download0\payloads\goldhen.ts
+  100:47  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+
+C:\Users\setup\Music\vue-after-free-main\src\download0\payloads\reboot.ts
+  23:14  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+
+C:\Users\setup\Music\vue-after-free-main\src\download0\themes\default\payload_host.ts
+  307:27  error  Unexpected use of comma operator          no-sequences
+  311:27  error  Unexpected use of comma operator          no-sequences
+  312:28  error  Unexpected use of comma operator          no-sequences
+  313:32  error  Unexpected use of comma operator          no-sequences
+  359:68  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  359:93  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+
+C:\Users\setup\Music\vue-after-free-main\src\download0\themes\midnight\main.ts
+  5:21  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+
+C:\Users\setup\Music\vue-after-free-main\src\download0\themes\midnight\payload_host.ts
+  107:39  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  203:27  error  Unexpected use of comma operator          no-sequences
+  204:52  error  Unexpected use of comma operator          no-sequences
+  205:28  error  Unexpected use of comma operator          no-sequences
+  206:54  error  Unexpected use of comma operator          no-sequences
+  225:27  error  Unexpected use of comma operator          no-sequences
+  226:52  error  Unexpected use of comma operator          no-sequences
+  227:28  error  Unexpected use of comma operator          no-sequences
+  228:54  error  Unexpected use of comma operator          no-sequences
+  240:27  error  Unexpected use of comma operator          no-sequences
+  241:46  error  Unexpected use of comma operator          no-sequences
+  242:28  error  Unexpected use of comma operator          no-sequences
+  243:47  error  Unexpected use of comma operator          no-sequences
+  263:29  error  Unexpected use of comma operator          no-sequences
+  267:29  error  Unexpected use of comma operator          no-sequences
+  268:30  error  Unexpected use of comma operator          no-sequences
+  269:34  error  Unexpected use of comma operator          no-sequences
+
+Γ£û 26 problems (26 errors, 0 warnings)
+

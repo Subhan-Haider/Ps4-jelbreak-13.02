@@ -1,8 +1,8 @@
 type TypedArray = Uint8Array | Uint16Array | Uint32Array | Int8Array | Int16Array | Int32Array | Float32Array | Float64Array
 
-declare function log(message: string): void
-declare function debug(message: string): void
-declare function include(path: string): void
+declare function log (message: string): void
+declare function debug (message: string): void
+declare function include (path: string): void
 
 declare var u32_structs: Uint32Array[]
 declare var spray_size: 0x100
@@ -74,7 +74,7 @@ declare class Image {
   scaleX: number
   scaleY: number
 
-  constructor(options: {
+  constructor (options: {
     url: string
     x: number
     y: number
@@ -85,7 +85,7 @@ declare class Image {
 }
 
 declare class Style {
-  constructor(options: {
+  constructor (options: {
     name: string
     color: string
     size: number
@@ -101,7 +101,7 @@ declare class Video {
   onerror: (err: string) => void
   onstatechange: (state: string) => void
 
-  constructor(options: {
+  constructor (options: {
     x: number
     y: number
     width: number
@@ -109,13 +109,13 @@ declare class Video {
     visible: boolean
     autoplay: boolean
   })
-  play(): void
-  open(url: string): void
-  close(): void
+  play (): void
+  open (url: string): void
+  close (): void
 }
 
 declare var bg_success: Image
 declare var bg_fail: Image
 declare var bgmClip: jsmaf.AudioClip | null | undefined
-declare function startBgmIfEnabled(): void
-declare function stopBgm(): void
+declare function startBgmIfEnabled (): void
+declare function stopBgm (): void

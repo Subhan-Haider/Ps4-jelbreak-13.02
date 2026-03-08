@@ -11,7 +11,7 @@ declare namespace jsmaf {
     scaleX: number
     scaleY: number
 
-    constructor(options?: {
+    constructor (options?: {
       x?: number
       y?: number
       width?: number
@@ -28,17 +28,17 @@ declare namespace jsmaf {
     port: number
     onmessage: (clientID: number, data: string) => void
 
-    constructor()
-    broadcast(data: string): void
+    constructor ()
+    broadcast (data: string): void
   }
 
   declare class AudioClip {
     volume: number
 
-    constructor()
-    open(url: string): void
-    stop(): void
-    close(): void
+    constructor ()
+    open (url: string): void
+    stop (): void
+    close (): void
   }
 
   declare class XMLHttpRequest {
@@ -47,9 +47,9 @@ declare namespace jsmaf {
     responseText: string
     onreadystatechange: () => void
 
-    constructor()
-    open(method: string, url: string, async: boolean): void
-    send(data?: string): void
+    constructor ()
+    open (method: string, url: string, async: boolean): void
+    send (data?: string): void
   }
 
   declare type Element = Text | Image | Video
@@ -58,17 +58,17 @@ declare namespace jsmaf {
     declare const children: Element[]
   }
 
-  declare function eval(code: string): unknown
+  declare function eval (code: string): unknown
 
   declare var gc: unknown
 
   declare var locale: string
 
-  declare function clearInterval(intervalID: number): void
-  declare function setInterval(handler: () => void, timeout: number): number
+  declare function clearInterval (intervalID: number): void
+  declare function setInterval (handler: () => void, timeout: number): number
 
-  declare function exit(): void
-  declare function setTimeout(handler: () => void, timeout: number): number
+  declare function exit (): void
+  declare function setTimeout (handler: () => void, timeout: number): number
   declare var circleIsAdvanceButton: boolean
 
   declare var onEnterFrame: (() => void) | null
@@ -76,6 +76,6 @@ declare namespace jsmaf {
 
   declare var remotePlay: boolean
 
-  declare function openWebBrowser(url: string): void
+  declare function openWebBrowser (url: string): void
   declare var loader_has_run: boolean
 }
