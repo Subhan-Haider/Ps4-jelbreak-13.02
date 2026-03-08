@@ -90,9 +90,8 @@ import { BigInt, utils } from 'download0/types'
       log('GoldHEN load requested.')
 
       if (!is_jailbroken) {
-        log('Error: System not jailbroken.')
-        utils.notify('Jailbreak required first!')
-        return
+        log('Warning: System not jailbroken (13.02+ Research Mode).')
+        utils.notify('Research Mode: Attempting Experimental Load...')
       }
 
       try {
