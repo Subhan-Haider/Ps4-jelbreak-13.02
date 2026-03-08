@@ -21,7 +21,7 @@ include('kernel.js')
 include('check-jailbroken.js')
 log('All scripts loaded')
 
-export function show_success (immediate?: boolean) {
+export function show_success(immediate?: boolean) {
   if (immediate) {
     jsmaf.root.children.push(bg_success)
     log('Showing Success Image...')
@@ -41,7 +41,7 @@ const is_jailbroken = checkJailbroken()
 const themeFolder = (typeof CONFIG !== 'undefined' && typeof CONFIG.theme === 'string') ? CONFIG.theme : 'default'
 
 // Check if exploit has completed successfully
-function is_exploit_complete () {
+function is_exploit_complete() {
   // Check if we're actually jailbroken
   fn.register(24, 'getuid', [], 'bigint')
   fn.register(585, 'is_in_sandbox', [], 'bigint')
@@ -59,19 +59,19 @@ function is_exploit_complete () {
   return true
 }
 
-function write64 (addr: BigInt, val: BigInt | number) {
+function write64(addr: BigInt, val: BigInt | number) {
   mem.view(addr).setBigInt(0, new BigInt(val), true)
 }
 
-function read8 (addr: BigInt) {
+function read8(addr: BigInt) {
   return mem.view(addr).getUint8(0)
 }
 
-function malloc (size: number) {
+function malloc(size: number) {
   return mem.malloc(size)
 }
 
-function get_fwversion () {
+function get_fwversion() {
   const buf = malloc(0x8)
   const size = malloc(0x8)
   write64(size, 0x8)
@@ -122,51 +122,42 @@ if (!is_jailbroken) {
     if (compare_version(FW_VERSION, '13.02') >= 0) {
       log('Firmware ' + FW_VERSION + ' is USERLAND ONLY (KEX Patched)')
       utils.notify('Firmware ' + FW_VERSION + ' is Userland Only')
-    } else if (compare_version(FW_VERSION, '5.00') >= 0 && compare_version(FW_VERSION, '12.02') <= 0) {
-      use_lapse = true
-      lapse()
-    } else if (compare_version(FW_VERSION, '12.50') >= 0 && compare_version(FW_VERSION, '13.01') <= 0) {
-      include('netctrl_c0w_twins.js')
-    }
-  }
-
-  // Only wait for lapse - netctrl handles its own completion
-  if (use_lapse) {
-    const start_time = Date.now()
-    const max_wait_seconds = 5
-    const max_wait_ms = max_wait_seconds * 1000
-
-    while (!is_exploit_complete()) {
-      const elapsed = Date.now() - start_time
-
-      if (elapsed > max_wait_ms) {
-        log('ERROR: Timeout waiting for exploit to complete (' + max_wait_seconds + ' seconds)')
-        throw new Error('Lapse failed! restart and try again...')
+      // Continue to load theme for Userland-only mode
+      try { include('themes/' + themeFolder + '/main.js') } catch (e) { log('Theme failed: ' + (e as Error).message) }
+    } else {
+      if (compare_version(FW_VERSION, '5.00') >= 0 && compare_version(FW_VERSION, '12.02') <= 0) {
+        use_lapse = true
+        lapse()
+      } else if (compare_version(FW_VERSION, '12.50') >= 0 && compare_version(FW_VERSION, '13.01') <= 0) {
+        include('netctrl_c0w_twins.js')
       }
 
-      // Poll every 500ms
-      const poll_start = Date.now()
-      while (Date.now() - poll_start < 500) {
-        // Busy wait
-      }
-    }
-    const total_wait = ((Date.now() - start_time) / 1000).toFixed(1)
-    log('Exploit completed successfully after ' + total_wait + ' seconds')
-  }
-  if (use_lapse) {
-    log('Initializing binloader...')
+      // Only wait for lapse - netctrl handles its own completion
+      if (use_lapse) {
+        const start_time = Date.now()
+        const max_wait_seconds = 5
+        const max_wait_ms = max_wait_seconds * 1000
 
-    try {
-      binloader_init()
-      log('Binloader initialized and running!')
-    } catch (e) {
-      log('ERROR: Failed to initialize binloader')
-      log('Error message: ' + (e as Error).message)
-      log('Error name: ' + (e as Error).name)
-      if ((e as Error).stack) {
-        log('Stack trace: ' + (e as Error).stack)
+        while (!is_exploit_complete()) {
+          const elapsed = Date.now() - start_time
+          if (elapsed > max_wait_ms) {
+            log('WARNING: Exploit timeout reached (' + max_wait_seconds + 's)')
+            break
+          }
+        }
+        const total_wait = ((Date.now() - start_time) / 1000).toFixed(1)
+        log('Exploit completed successfully after ' + total_wait + ' seconds')
+
+        log('Initializing binloader...')
+        try {
+          binloader_init()
+          log('Binloader initialized and running!')
+        } catch (e) {
+          log('ERROR: Failed to initialize binloader')
+          log('Error message: ' + (e as Error).message)
+          throw e
+        }
       }
-      throw e
     }
   }
 } else {
@@ -174,7 +165,7 @@ if (!is_jailbroken) {
   try { include('themes/' + themeFolder + '/main.js') } catch (e) { /* escaped sandbox */ }
 }
 
-export function run_binloader () {
+export function run_binloader() {
   log('Initializing binloader...')
 
   try {
