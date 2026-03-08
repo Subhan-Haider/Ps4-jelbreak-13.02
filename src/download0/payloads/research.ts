@@ -35,14 +35,14 @@ import { kernel, hex } from 'download0/kernel'
   const logLines: string[] = []
   const maxLogs = 15
 
-  function addLog (msg: string) {
+  function addLog(msg: string) {
     logLines.push(msg)
     if (logLines.length > maxLogs) logLines.shift()
     drawLogs()
   }
 
   const logContainer: jsmaf.Text[] = []
-  function drawLogs () {
+  function drawLogs() {
     for (const t of logContainer) {
       const idx = jsmaf.root.children.indexOf(t)
       if (idx !== -1) jsmaf.root.children.splice(idx, 1)
@@ -60,32 +60,75 @@ import { kernel, hex } from 'download0/kernel'
     }
   }
 
-  addLog('Initializing Educational Sandbox...')
-  addLog('Firmware: 13.02 detected.')
-  addLog('Note: Public KEX for 13.02 is currently 0% (Patched by Sony).')
-  addLog('This tool attempts to find new vulnerabilities via memory spraying.')
+  addLog('--- [ 13.02 EDUCATIONAL HUB ] ---')
+  addLog('This is a simulated research environment.')
+  addLog('Goal: Understand why 13.02 is protected and how to bypass it.')
+  addLog('')
 
-  let step = 0
-  const researchInterval = jsmaf.setInterval(() => {
-    step++
-    switch (step) {
-      case 1: addLog('Gathering Userland memory maps...'); break
-      case 2: addLog('Allocating 256MB spray buffer...'); break
-      case 3: addLog('Scanning for IPv6 RTHDR vulnerability... (Patched)'); break
-      case 4: addLog('Testing alternative race condition in netctrl...'); break
-      case 5: addLog('Result: Kernel page protection active.'); break
-      case 6: addLog('Attempting to leak pointer from WebKit heap...'); break
-      case 8: addLog('Leak successful! Theoretical base: 0xffffffff82600000'); break
-      case 10: addLog('Analyzing kernel patch requirements for 13.02...'); break
-      case 12: addLog('Status: NO VULNERABILITY FOUND AT THIS ADDRESS.'); break
-      case 14:
-        addLog('Research Complete.')
-        addLog('Education: Sony effectively mitigated the UAF in 13.02.')
-        addLog('Next Step: Investigate hardware-based side channels.')
-        jsmaf.clearInterval(researchInterval)
-        break
+  const briefings = [
+    {
+      title: '1. WHY IS IT BLOCKED?',
+      lines: [
+        'Sony patched the Netctrl bug used in 13.00.',
+        'The "door" we used to enter the kernel is gone.',
+        'The browser is now locked in a secure Sandbox.',
+        'Access Denied: The system won\'t let JS touch core memory.'
+      ]
+    }, {
+      title: '2. HOW TO BYPASS KASLR?',
+      lines: [
+        'KASLR hides the Kernel at a random memory address.',
+        'Bypass: We use "Memory Spraying" to find a leak.',
+        'If we find a single pointer, we can calculate the rest.',
+        'Result: We now know WHERE the kernel is hiding.'
+      ]
+    }, {
+      title: '3. HOW TO BYPASS WRITE-PROTECTION?',
+      lines: [
+        'Sony protects the kernel memory from being changed.',
+        'Bypass: Return-Oriented Programming (ROP) Chains.',
+        'We trick the CPU into using its own code against itself.',
+        'Result: We temporarily disable Write-Protection.'
+      ]
+    }, {
+      title: '4. FINAL STEP: GOLDHEN LOADING',
+      lines: [
+        'With the bridge built, we inject the GoldHEN binary.',
+        'It patches the system call table to enable homebrew.',
+        'This is the "100% Jailbreak" goal for 13.02.'
+      ]
     }
-  }, 1200)
+  ]
+
+  let briefingIndex = 0
+  let lineIndex = 0
+
+  const researchInterval = jsmaf.setInterval(() => {
+    if (briefingIndex >= briefings.length) {
+      addLog('')
+      addLog('--- RESEARCH SIMULATION COMPLETE ---')
+      addLog('Education: Bypassing 13.02 requires a NEW bug.')
+      addLog('Stay on 13.02! Do not update to 13.04+.')
+      jsmaf.clearInterval(researchInterval)
+      return
+    }
+
+    const currentBriefing = briefings[briefingIndex]
+    if (!currentBriefing) return
+
+    if (lineIndex === 0) {
+      addLog('>> ' + currentBriefing.title)
+    }
+
+    if (lineIndex < currentBriefing.lines.length) {
+      addLog('   - ' + currentBriefing.lines[lineIndex]!)
+      lineIndex++
+    } else {
+      briefingIndex++
+      lineIndex = 0
+      addLog('') // Spacer
+    }
+  }, 1500)
 
   jsmaf.onKeyDown = function (keyCode) {
     if (keyCode === 3) {
