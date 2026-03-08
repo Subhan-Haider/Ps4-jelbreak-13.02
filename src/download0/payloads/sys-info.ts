@@ -4,19 +4,19 @@ import { sysctlbyname } from 'download0/kernel'
 (function () {
   log('System Info starting...')
 
-  function malloc(size: number) {
+  function malloc (size: number) {
     return mem.malloc(size)
   }
 
-  function write64(addr: BigInt, val: BigInt | number) {
+  function write64 (addr: BigInt, val: BigInt | number) {
     mem.view(addr).setBigInt(0, new BigInt(val), true)
   }
 
-  function read8(addr: BigInt) {
+  function read8 (addr: BigInt) {
     return mem.view(addr).getUint8(0)
   }
 
-  function get_fwversion() {
+  function get_fwversion () {
     const buf = malloc(0x8)
     const size = malloc(0x8)
     write64(size, 0x8)
@@ -28,7 +28,7 @@ import { sysctlbyname } from 'download0/kernel'
     return 'Unknown'
   }
 
-  function get_model() {
+  function get_model () {
     const buf = malloc(256)
     const size = malloc(0x8)
     write64(size, 256)
