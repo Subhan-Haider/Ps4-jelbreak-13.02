@@ -361,15 +361,15 @@ declare var kernel: any;
       const selectedOption = menuOptions[currentButton]
       if (!selectedOption) return
 
-      // Educational Mode for 13.02+
-      if (isUserlandOnly && selectedOption.script === 'payloads/goldhen.js') {
-        utils.notify('13.02 Research Mode: Attempting Payload Injection...')
-        log('13.02 RESEARCH: Loading GoldHEN with experimental offsets.')
-        // Fall through to include(script)
-      } else if (isUserlandOnly && selectedOption.script === 'loader.js') {
-        utils.notify('13.02 Research Mode: Searching for Kernel Entry...')
-        log('13.02 RESEARCH: Attempting theoretical kernel mapping.')
-        // Fall through to include(script)
+      // Engineer Mode: No blocks. Attempt full chain for analysis.
+      if (isUserlandOnly) {
+        if (selectedOption.script === 'payloads/goldhen.js') {
+          utils.notify('ENGINEER: Attempting GoldHEN Injection via Research Chain...')
+          log('13.02 ENGINEER: Loading GoldHEN for vulnerability testing.')
+        } else if (selectedOption.script === 'loader.js') {
+          utils.notify('ENGINEER: Initiating 100% KEX Attempt (Experimental)...')
+          log('13.02 ENGINEER: Running KEX chain to verify mitigations.')
+        }
       }
 
       if (selectedOption.script === 'loader.js') {

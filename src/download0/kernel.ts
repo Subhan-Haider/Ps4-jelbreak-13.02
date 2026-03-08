@@ -118,7 +118,7 @@ const shellcode_fw_map = {
   '13.50': '13.02',
 }
 
-export function get_mmap_patch_offsets (fw_version: string): [number, number] | null {
+export function get_mmap_patch_offsets(fw_version: string): [number, number] | null {
   // Normalize version
   let lookup = fw_version
   if (fw_version === '9.04') lookup = '9.03'
@@ -134,7 +134,7 @@ export function get_mmap_patch_offsets (fw_version: string): [number, number] | 
 }
 
 // Helper to convert hex string to byte array
-function hexToBytes (hex: string) {
+function hexToBytes(hex: string) {
   const bytes = []
   for (let i = 0; i < hex.length; i += 2) {
     bytes.push(parseInt(hex.slice(i, i + 2), 16))
@@ -143,7 +143,7 @@ function hexToBytes (hex: string) {
 }
 
 // Get kernel patch shellcode for firmware version
-function get_kpatch_shellcode (fw_version: string) {
+function get_kpatch_shellcode(fw_version: string) {
   const hex = kpatch_shellcode[shellcode_fw_map[fw_version as keyof typeof shellcode_fw_map] as keyof typeof kpatch_shellcode]
   if (!hex) {
     return null
@@ -451,7 +451,7 @@ export const ps4_kernel_offset_list = {
   '12.52': offset_ps4_12_50,
   '13.00': offset_ps4_12_50,
   '13.01': offset_ps4_12_50,
-  '13.02': offset_ps4_12_50,
+  '13.02': offset_ps4_12_50, // Potential 13.02 candidate offsets
   '13.04': offset_ps4_12_50,
   '13.50': offset_ps4_12_50,
   'PS5-1.00': offset_ps5_base,
@@ -486,7 +486,7 @@ let kernel_offset: (typeof ps4_kernel_offset_list[keyof typeof ps4_kernel_offset
   IP6PO_RTHDR?: number,
 } | null = null // Global
 
-export function get_kernel_offset (FW_VERSION: string) {
+export function get_kernel_offset(FW_VERSION: string) {
   const fw_offsets = ps4_kernel_offset_list[FW_VERSION as keyof typeof ps4_kernel_offset_list]
 
   if (!fw_offsets) {
@@ -659,65 +659,65 @@ export const kernel: {
 }
 
 // Helper functions
-export function is_kernel_rw_available () {
+export function is_kernel_rw_available() {
   return kernel.read_buffer && kernel.write_buffer
 }
 
-export function check_kernel_rw () {
+export function check_kernel_rw() {
   if (!is_kernel_rw_available()) {
     throw new Error('kernel r/w is not available')
   }
 }
 
-export function write8 (addr: BigInt, val: number) {
+export function write8(addr: BigInt, val: number) {
   mem.view(addr).setUint8(0, val & 0xFF)
 }
 
-export function write16 (addr: BigInt, val: number) {
+export function write16(addr: BigInt, val: number) {
   mem.view(addr).setUint16(0, val & 0xFFFF, true)
 }
 
-export function write32 (addr: BigInt, val: number) {
+export function write32(addr: BigInt, val: number) {
   mem.view(addr).setUint32(0, val & 0xFFFFFFFF, true)
 }
 
-export function write64 (addr: BigInt, val: BigInt | number) {
+export function write64(addr: BigInt, val: BigInt | number) {
   mem.view(addr).setBigInt(0, new BigInt(val), true)
 }
 
-export function read8 (addr: BigInt) {
+export function read8(addr: BigInt) {
   return mem.view(addr).getUint8(0)
 }
 
-export function read16 (addr: BigInt) {
+export function read16(addr: BigInt) {
   return mem.view(addr).getUint16(0, true)
 }
 
-export function read32 (addr: BigInt) {
+export function read32(addr: BigInt) {
   return mem.view(addr).getUint32(0, true)
 }
 
-export function read64 (addr: BigInt) {
+export function read64(addr: BigInt) {
   return mem.view(addr).getBigInt(0, true)
 }
 
-export function malloc (size: number) {
+export function malloc(size: number) {
   return mem.malloc(size)
 }
 
-export function hex (val: BigInt | number) {
+export function hex(val: BigInt | number) {
   if (val instanceof BigInt) { return val.toString() }
   return '0x' + val.toString(16).padStart(2, '0')
 }
 
-export function send_notification (msg: string) {
+export function send_notification(msg: string) {
   utils.notify(msg)
 }
 
 fn.register(0x0ca, 'sysctl', ['bigint', 'number', 'bigint', 'bigint', 'bigint', 'bigint'], 'bigint')
 const sysctl = fn.sysctl
 
-export function sysctlbyname (name: string, oldp: BigInt | number, oldp_len: BigInt | number, newp: BigInt | number, newp_len: BigInt | number) {
+export function sysctlbyname(name: string, oldp: BigInt | number, oldp_len: BigInt | number, newp: BigInt | number, newp_len: BigInt | number) {
   const translate_name_mib = malloc(0x8)
   const buf_size = 0x70
   const mib = malloc(buf_size)
@@ -745,7 +745,7 @@ export function sysctlbyname (name: string, oldp: BigInt | number, oldp_len: Big
   return true
 }
 
-export function get_fwversion () {
+export function get_fwversion() {
   const buf = malloc(0x8)
   const size = malloc(0x8)
   write64(size, 0x8)
@@ -786,7 +786,7 @@ const is_in_sandbox = fn.is_in_sandbox
 const mmap = fn.mmap
 const munmap = fn.munmap
 
-export function jailbreak_shared (FW_VERSION: string) {
+export function jailbreak_shared(FW_VERSION: string) {
   if (!kernel.addr.curproc || !kernel.addr.base || !kernel.addr.allproc) {
     throw new Error('kernel.addr is not properly initialized')
   }
@@ -903,7 +903,7 @@ const kexec = fn.kexec
 
 // Apply kernel patches via kexec using a single ROP chain
 // This avoids returning to JS between critical operations
-export function apply_kernel_patches (fw_version: string) {
+export function apply_kernel_patches(fw_version: string) {
   try {
     if (!kernel.addr.base) {
       throw new Error('kernel.addr.base is not initialized')

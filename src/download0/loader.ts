@@ -21,7 +21,7 @@ include('kernel.js')
 include('check-jailbroken.js')
 log('All scripts loaded')
 
-export function show_success (immediate?: boolean) {
+export function show_success(immediate?: boolean) {
   if (immediate) {
     jsmaf.root.children.push(bg_success)
     log('Showing Success Image...')
@@ -41,7 +41,7 @@ const is_jailbroken = checkJailbroken()
 const themeFolder = (typeof CONFIG !== 'undefined' && typeof CONFIG.theme === 'string') ? CONFIG.theme : 'default'
 
 // Check if exploit has completed successfully
-function is_exploit_complete () {
+function is_exploit_complete() {
   // Check if we're actually jailbroken
   fn.register(24, 'getuid', [], 'bigint')
   fn.register(585, 'is_in_sandbox', [], 'bigint')
@@ -59,19 +59,19 @@ function is_exploit_complete () {
   return true
 }
 
-function write64 (addr: BigInt, val: BigInt | number) {
+function write64(addr: BigInt, val: BigInt | number) {
   mem.view(addr).setBigInt(0, new BigInt(val), true)
 }
 
-function read8 (addr: BigInt) {
+function read8(addr: BigInt) {
   return mem.view(addr).getUint8(0)
 }
 
-function malloc (size: number) {
+function malloc(size: number) {
   return mem.malloc(size)
 }
 
-function get_fwversion () {
+function get_fwversion() {
   const buf = malloc(0x8)
   const size = malloc(0x8)
   write64(size, 0x8)
@@ -120,10 +120,18 @@ if (!is_jailbroken) {
   } else {
     log('JB Behavior: Auto Detect')
     if (compare_version(FW_VERSION, '13.02') >= 0) {
-      log('Firmware ' + FW_VERSION + ' is USERLAND ONLY (KEX Patched)')
-      utils.notify('Firmware ' + FW_VERSION + ' is Userland Only')
-      // Continue to load theme for Userland-only mode
-      try { include('themes/' + themeFolder + '/main.js') } catch (e) { log('Theme failed: ' + (e as Error).message) }
+      log('Firmware ' + FW_VERSION + ' - ENGINEER MODE ACTIVE')
+      utils.notify('Research Mode: Running 13.02 Exploit Chain Analysis...')
+
+      // For engineers: We attempt the chain even on patched firmware to verify mitigations
+      if (jb_behavior === 1 || jb_behavior === 0) {
+        log('Attempting NetControl Chain (13.02 Analysis)...')
+        include('netctrl_c0w_twins.js')
+      } else if (jb_behavior === 2) {
+        log('Attempting Lapse Chain (13.02 Analysis)...')
+        use_lapse = true
+        lapse()
+      }
     } else {
       if (compare_version(FW_VERSION, '5.00') >= 0 && compare_version(FW_VERSION, '12.02') <= 0) {
         use_lapse = true
@@ -165,7 +173,7 @@ if (!is_jailbroken) {
   try { include('themes/' + themeFolder + '/main.js') } catch (e) { /* escaped sandbox */ }
 }
 
-export function run_binloader () {
+export function run_binloader() {
   log('Initializing binloader...')
 
   try {
