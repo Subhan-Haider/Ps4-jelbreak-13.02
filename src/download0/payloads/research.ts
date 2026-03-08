@@ -35,14 +35,14 @@ import { kernel, hex } from 'download0/kernel'
   const logLines: string[] = []
   const maxLogs = 15
 
-  function addLog(msg: string) {
+  function addLog (msg: string) {
     logLines.push(msg)
     if (logLines.length > maxLogs) logLines.shift()
     drawLogs()
   }
 
   const logContainer: jsmaf.Text[] = []
-  function drawLogs() {
+  function drawLogs () {
     for (const t of logContainer) {
       const idx = jsmaf.root.children.indexOf(t)
       if (idx !== -1) jsmaf.root.children.splice(idx, 1)
