@@ -73,6 +73,7 @@ Closing and reopening Vue is required between running JS payloads, but .bin or .
     *   Select **System Info** to view console hardware details.
     *   Select **Kern Research** (Educational) to see the progress on 13.02 kernel exploration.
     *   Select **FTP Server** to browse the local PlayStation Vue sandbox files.
+    *   **Run GoldHEN**: You can click the button to try, but the system will block the "Homebrew Enabler" because it lacks permission to rewrite the console's core (the Kernel).
 
 **Q: Can I run the jailbreak offline?**
 No. PS Vue requires any form of network connection. Internet is not required, so you can use any network like home WiFi, a hotspot from your mobile phone, a network from a microcontroller like ESP32, or an Ethernet network from a repurposed PPPwn device.
